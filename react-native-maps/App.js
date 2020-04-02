@@ -16,7 +16,7 @@ export default class App extends React.Component {
     return (
       <MapView
         style={{ flex: 1 }}
-        provider="google"
+        // provider="google"
         region={{
           latitude: 40.76727216,
           longitude: -73.99392888,
