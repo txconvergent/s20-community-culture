@@ -19,8 +19,8 @@ export default class App extends React.Component {
         style={{ flex: 1 }}
         provider="google"
         region={{
-          latitude: 40.76727216,
-          longitude: -73.99392888,
+          latitude: 30.267032,
+          longitude: -97.742209,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -31,10 +31,7 @@ export default class App extends React.Component {
          longitude: marker.longitude,
      };
 
-     const descrip = `Time Status: ${marker.timeStatus}\n
-                      User Rating: ${marker.userRating}\n
-                      Address: ${marker.stAddress}\n
-                      Top comment: ${marker.topComment}`;
+     const descrip = `Time Status: ${marker.timeStatus}\nUser Rating: ${marker.userRating}\nAddress: ${marker.stAddress}\nTop comment: ${marker.topComment}`;
 
      return (
          <MapView.Marker
