@@ -27,13 +27,13 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.yourcompany.yourappname",
       "config": {
-        "googleMapsApiKey": "iOS Maps API key here"
+        "googleMapsApiKey": "iOS Maps API key"
       }
     },
     "android": {
       "package": "com.yourcompany.yourappname",
       "config": {
-        "googleMaps": { "apiKey": "Android Maps API key here"}
+        "googleMaps": { "apiKey": "Android Maps API key"}
       }
     }
   }
