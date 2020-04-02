@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView from "react-native-maps";
+import sample_markers from './sample_markers.json';
 
 export default class App extends React.Component {
   constructor(props){
@@ -16,7 +17,7 @@ export default class App extends React.Component {
     return (
       <MapView
         style={{ flex: 1 }}
-        // provider="google"
+        provider="google"
         region={{
           latitude: 40.76727216,
           longitude: -73.99392888,
@@ -30,14 +31,17 @@ export default class App extends React.Component {
          longitude: marker.longitude,
      };
 
-     const metadata = `Status: ${marker.statusValue}`;
+     const descrip = `Time Status: ${marker.timeStatus}\n
+                      User Rating: ${marker.userRating}\n
+                      Address: ${marker.stAddress}\n
+                      Top comment: ${marker.topComment}`;
 
      return (
          <MapView.Marker
             key={index}
             coordinate={coords}
-            title={marker.stationName}
-            description={metadata}
+            title={marker.attractionName}
+            description={descrip}
          />
      );
       })}
@@ -50,16 +54,10 @@ export default class App extends React.Component {
   }
 
   fetchMarkerData() {
-      fetch('https://feeds.citibikenyc.com/stations/stations.json')
-        .then((response) => response.json())
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            markers: responseJson.stationBeanList,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    this.setState({
+      isLoading: false,
+      markers: sample_markers.attractionList,
+    });
+
     }
 };
