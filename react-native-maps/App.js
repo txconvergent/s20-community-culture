@@ -19,6 +19,9 @@ export default class App extends React.Component {
         <MapView
           style={{ flex: 1 }}
           provider="google"
+          mapType="hybrid"
+          showsMyLocationButton
+          showsUserLocation
           region={{
             latitude: 30.267032,
             longitude: -97.742209,
@@ -40,6 +43,7 @@ export default class App extends React.Component {
               coordinate={coords}
               title={marker.attractionName}
               description={descrip}
+              pinColor={marker.pinColor}
            />
 
        );
@@ -55,7 +59,11 @@ export default class App extends React.Component {
           <Image source={require('./icons/camera.png')} style={styles.icon}/>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          alert('You tapped the button!');
+        }}>
           <Image source={require('./icons/search.png')} style={styles.icon}/>
         </TouchableOpacity>
       </View>
@@ -84,14 +92,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#bdeaff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   button: {
     bottom: 0,
     backgroundColor: '#bdeaff',
     padding: 5,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
   }
 });
