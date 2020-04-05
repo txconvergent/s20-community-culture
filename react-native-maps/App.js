@@ -2,8 +2,78 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import MapView from "react-native-maps";
 import sample_markers from './sample_markers.json';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-export default class App extends React.Component {
+const Tab = createBottomTabNavigator();
+
+export default function App(){
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Camera') {
+              return (
+                <Image source={require('./icons/camera.png')} style={styles.icon}/>
+              );
+            } else if (route.name === 'Account') {
+              return (
+                <Image source={require('./icons/account.png')} style={styles.icon}/>
+              );
+            } else if (route.name === 'Map') {
+              return (
+                <Image source={require('./icons/account.png')} style={styles.icon}/>
+              );
+            } else if (route.name === 'Search'){
+              return (
+                <Image source={require('./icons/search.png')} style={styles.icon}/>
+              );
+            }
+          },
+        })}
+        tabBarOptions={{
+          style: styles.buttonRow,
+          showLabel: false,
+        }}
+      >
+        <Tab.Screen name="Account" component={AccountScreen} />
+        <Tab.Screen name="Map" component={MapScreen} />
+        <Tab.Screen name="Camera" component={CameraScreen} />
+        <Tab.Screen name="Search" component={SearchScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function CameraScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Camera</Text>
+    </View>
+  );
+}
+
+function AccountScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Account</Text>
+    </View>
+  );
+}
+
+function SearchScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Search</Text>
+    </View>
+  );
+}
+
+class MapScreen extends React.Component {
+
   constructor(props){
     super(props);
 
@@ -45,21 +115,6 @@ export default class App extends React.Component {
        );
         })}
       </MapView>
-
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button}>
-          <Image source={require('./icons/account.png')} style={styles.icon}/>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Image source={require('./icons/camera.png')} style={styles.icon}/>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Image source={require('./icons/search.png')} style={styles.icon}/>
-        </TouchableOpacity>
-      </View>
-
     </>
     );
   }
@@ -81,9 +136,10 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#bdeaff',
+    paddingBottom: 20,
   },
   button: {
     bottom: 0,
