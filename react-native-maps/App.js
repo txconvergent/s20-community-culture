@@ -129,6 +129,9 @@ class MapScreen extends React.Component {
         <MapView
           style={{ flex: 1 }}
           provider="google"
+          mapType="hybrid"
+          showsMyLocationButton
+          showsUserLocation
           region={{
             latitude: 30.267032,
             longitude: -97.742209,
@@ -150,6 +153,7 @@ class MapScreen extends React.Component {
               coordinate={coords}
               title={marker.attractionName}
               description={descrip}
+              pinColor={marker.pinColor}
            />
 
        );
@@ -185,9 +189,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: '#bdeaff',
     padding: 5,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
   }
 });

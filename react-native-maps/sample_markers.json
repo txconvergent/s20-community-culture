@@ -11,7 +11,8 @@
       "city":"Austin",
       "state":"TX",
       "postalCode":"78705",
-      "topComment":"OU sucks"
+      "topComment":"Hook 'em'",
+      "pinColor":"green",
     },
 
     {
@@ -25,6 +26,7 @@
       "city":"Austin",
       "state":"TX",
       "postalCode":"78705",
-      "topComment":"I haven't had hot water in 3 weeks"
+      "topComment":"I haven't had hot water in 3 weeks",
+      "pinColor":"blue",
     }
 ]}
