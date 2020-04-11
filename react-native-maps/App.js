@@ -1,9 +1,119 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import MapView from "react-native-maps";
 import sample_markers from './sample_markers.json';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Camera } from "expo-camera";
 
-export default class App extends React.Component {
+const Tab = createBottomTabNavigator();
+
+export default function App(){
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Camera') {
+              return (
+                <Image source={require('./icons/camera.png')} style={styles.icon}/>
+              );
+            } else if (route.name === 'Account') {
+              return (
+                <Image source={require('./icons/account.png')} style={styles.icon}/>
+              );
+            } else if (route.name === 'Map') {
+              return (
+                <Image source={require('./icons/account.png')} style={styles.icon}/>
+              );
+            } else if (route.name === 'Search'){
+              return (
+                <Image source={require('./icons/search.png')} style={styles.icon}/>
+              );
+            }
+          },
+        })}
+        tabBarOptions={{
+          style: styles.buttonRow,
+          showLabel: false,
+        }}
+      >
+        <Tab.Screen name="Account" component={AccountScreen} />
+        <Tab.Screen name="Map" component={MapScreen} />
+        <Tab.Screen name="Camera" component={CameraScreen} />
+        <Tab.Screen name="Search" component={SearchScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function CameraScreen() {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+  return (
+    <View style={{ flex: 1 }}>
+      <Camera style={{ flex: 1 }} type={type}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'transparent',
+            flexDirection: 'row',
+          }}>
+          <TouchableOpacity
+            style={{
+              flex: 0.1,
+              alignSelf: 'flex-end',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              setType(
+                type === Camera.Constants.Type.back
+                  ? Camera.Constants.Type.front
+                  : Camera.Constants.Type.back
+              );
+            }}>
+            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+          </TouchableOpacity>
+        </View>
+      </Camera>
+    </View>
+  );
+}
+
+function AccountScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Account</Text>
+    </View>
+  );
+}
+
+function SearchScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Search</Text>
+    </View>
+  );
+}
+
+class MapScreen extends React.Component {
+
   constructor(props){
     super(props);
 
@@ -49,25 +159,6 @@ export default class App extends React.Component {
        );
         })}
       </MapView>
-
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button}>
-          <Image source={require('./icons/account.png')} style={styles.icon}/>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Image source={require('./icons/camera.png')} style={styles.icon}/>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          alert('You tapped the button!');
-        }}>
-          <Image source={require('./icons/search.png')} style={styles.icon}/>
-        </TouchableOpacity>
-      </View>
-
     </>
     );
   }
@@ -89,11 +180,10 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#bdeaff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    paddingBottom: 20,
   },
   button: {
     bottom: 0,
