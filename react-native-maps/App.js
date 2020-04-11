@@ -4,7 +4,7 @@ import MapView from "react-native-maps";
 import sample_markers from './sample_markers.json';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Camera from "expo-camera";
+import { Camera } from "expo-camera";
 
 const Tab = createBottomTabNavigator();
 
