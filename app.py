@@ -1,3 +1,4 @@
+from datetime import date
 from json import dumps
 
 from bson import ObjectId
@@ -8,6 +9,7 @@ import os
 
 from flask import request
 from flask_pymongo import pymongo
+from gridfs import GridFS
 
 load_dotenv()
 
@@ -19,6 +21,7 @@ app = Flask(__name__)
 mongo_client = pymongo.MongoClient(MONGO_DB_URL)
 posts_db = mongo_client.get_database('posts_db')
 posts = posts_db.get_collection('posts')
+posts_img = GridFS(posts_db)
 
 headers = {"Content-Type": "application/json"}
 
@@ -26,9 +29,10 @@ headers = {"Content-Type": "application/json"}
 Every post shall have 
 
 # Title (title) [string][required]
+# Coords [required][not implemented] [float][float]
 # Image(s) [array][required][not implemented]
-# No. ratings (scale of 0 - 1) (rating_ct) [int][not implemented]
-# Avg. rating (rating) [float][not implemented]
+# No. ratings (scale of 0 - 1) (rating_ct) [int]
+# Avg. rating (rating) [float]
 
 (extra)
 # post creator id [id]
@@ -59,41 +63,90 @@ def get_user(post_id):
 
 @app.route('/post/create/', methods=['POST'])
 def create_post():
-    received = request.json
+    if 'multipart/form-data' not in request.content_type:
+        return make_response('request must be made in multipart/form-data format; received {}'
+                             .format(request.content_type),
+                             500,
+                             headers)
+
+    if 'title' not in request.form or \
+            'lat' not in request.form or \
+            'lon' not in request.form or \
+            'attraction_img' not in request.files:
+        return make_response('request does not have required fields (title, lat, lon, attraction_img)', 500, headers)
+
+    title = request.form['title']
+    lat = request.form['lat']
+    lon = request.form['lon']
+
+    attraction_img_id = upload_attraction_img(request.files['attraction_img'])
 
     try:
-        title = received['title']
-    except:
-        return make_response('request does not have required fields (title)', 500, headers)
-
-    try:
-        entry_id = posts.insert_one({'title': title, 'rating': 0, 'rating_ct': 0})
+        entry_id = posts.insert_one({'title': title,
+                                     'rating': 0,
+                                     'rating_ct': 0,
+                                     'type': 'Point',
+                                     'coordinates': [lat, lon],
+                                     'imgs': [attraction_img_id]})
         return make_response('successfully created post {}'.format(entry_id.inserted_id), 200, headers)
     except:
         return make_response('failed creating post', 500, headers)
 
 
 @app.route('/post/add_rating/<post_id>', methods=['PUT'])
-def update_post(post_id):
-    received = request.json
+def update_post_rating(post_id):
+    if 'application/json' not in request.content_type:
+        return make_response('request must be made in json format; received {}'
+                             .format(request.content_type),
+                             500,
+                             headers)
 
-    try:
-        new_rating = received['rating']
-    except:
+    if 'attraction_img' not in request.form:
         return make_response('request does not have required fields (rating)', 500, headers)
+
+    sent_rating = request.json['rating']
 
     try:
         post = posts.find_one({'_id': ObjectId(post_id)})
 
-        existing_rating = post['rating']
-        old_rating_ct = post['rating_ct']
+        existing_rating = float(post['rating'])
+        old_rating_ct = float(post['rating_ct'])
 
         # naive average only
-        new_rating = (old_rating_ct * existing_rating + new_rating) / (old_rating_ct + 1)
+        new_rating = (old_rating_ct * existing_rating + sent_rating) / (old_rating_ct + 1)
 
-        mongo_client.db.users.update_one(
+        posts.update_one(
             {'_id': ObjectId(post_id)},
             {'$set': {'rating_ct': old_rating_ct + 1, 'rating': new_rating}}
+        )
+
+        return make_response('post {} updated successfully'.format(post_id), 200, headers)
+    except:
+        not_found()
+
+
+@app.route('/post/add_img/<post_id>', methods=['PUT'])
+def update_post_image(post_id):
+    if 'multipart/form-data' not in request.content_type:
+        return make_response('request must be made in multipart/form-data format; received {}'
+                             .format(request.content_type),
+                             500,
+                             headers)
+
+    if 'attraction_img' not in request.files:
+        return make_response('request does not have required fields (attraction_img)', 500, headers)
+
+    attraction_img_id = upload_attraction_img(request.files['attraction_img'])
+
+    try:
+        post = posts.find_one({'_id': ObjectId(post_id)})
+
+        exisiting_imgs = post['imgs']
+        exisiting_imgs.append(attraction_img_id)
+
+        posts.update_one(
+            {'_id': ObjectId(post_id)},
+            {'$set': {'imgs': exisiting_imgs}}
         )
 
         return make_response('post {} updated successfully'.format(post_id), 200, headers)
@@ -104,7 +157,7 @@ def update_post(post_id):
 @app.route('/post/delete/<post_id>', methods=['DELETE'])
 def delete_user(post_id):
     try:
-        mongo_client.db.users.delete_one({'_id': ObjectId(post_id)})
+        posts.delete_one({'_id': ObjectId(post_id)})
         return make_response('post deleted successfully', 200, headers)
     except:
         return not_found()
@@ -117,3 +170,13 @@ def not_found(error=None):
 
 if __name__ == '__main__':
     app.run()
+
+
+def upload_attraction_img(attraction_img):
+    attraction_img_name = "attraction_{}".format(date.today())  # image_hash.average_hash(attraction_img)
+
+    attraction_img_id = posts_img.put(attraction_img,
+                                      content_type=attraction_img.content_type,
+                                      filename=attraction_img_name)
+
+    return attraction_img_id
