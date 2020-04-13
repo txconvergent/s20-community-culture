@@ -1,8 +1,8 @@
-from datetime import date
+from datetime import datetime, date
 from json import dumps
 
 from bson import ObjectId
-from flask import Flask, make_response
+from flask import Flask, make_response, send_file
 
 from dotenv import load_dotenv
 import os
@@ -29,8 +29,9 @@ headers = {"Content-Type": "application/json"}
 Every post shall have 
 
 # Title (title) [string][required]
+# Date Created [date format string]
 # Coords [required][not implemented] [float][float]
-# Image(s) [array][required][not implemented]
+# Image(s) [array][required] - NOTE: PLEASE UPLOAD JPEG IMAGES ONLY FOR NOW
 # No. ratings (scale of 0 - 1) (rating_ct) [int]
 # Avg. rating (rating) [float]
 
@@ -83,6 +84,7 @@ def create_post():
 
     try:
         entry_id = posts.insert_one({'title': title,
+                                     'date_created': datetime.timestamp(datetime.now()),
                                      'rating': 0,
                                      'rating_ct': 0,
                                      'type': 'Point',
@@ -126,7 +128,7 @@ def update_post_rating(post_id):
 
 
 @app.route('/post/add_img/<post_id>', methods=['PUT'])
-def update_post_image(post_id):
+def add_post_image(post_id):
     if 'multipart/form-data' not in request.content_type:
         return make_response('request must be made in multipart/form-data format; received {}'
                              .format(request.content_type),
@@ -161,6 +163,20 @@ def delete_user(post_id):
         return make_response('post deleted successfully', 200, headers)
     except:
         return not_found()
+
+
+@app.route('/post/get_attraction_img/<img_id>')
+def get_img(img_id):
+
+    try:
+        attraction_img = posts_img.find_one({'_id': ObjectId(img_id)})
+    except:
+        return not_found()
+
+    response = make_response(attraction_img.read())
+    response.headers['Content-Type'] = 'image/jpeg'
+    response.headers["Content-Disposition"] = "attachment; filename={}".format(attraction_img.filename)
+    return response
 
 
 @app.errorhandler(404)
