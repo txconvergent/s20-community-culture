@@ -25,7 +25,10 @@ posts_img = GridFS(posts_db)
 
 headers = {"Content-Type": "application/json"}
 
+posts.createIndex({'location': "2dsphere"})
+
 '''
+todo add documentation to all methods
 Every post shall have 
 
 # Title (title) [string][required]
@@ -53,13 +56,19 @@ def index():
     return "Welcome to the PictureThis API"
 
 
-@app.route('/post/<post_id>')
-def get_user(post_id):
+@app.route('/post/<post_id>', methods=['GET'])
+def get_post(post_id):
     try:
         post = posts.find_one({'_id': ObjectId(post_id)})
         return dumps(post)
     except:
         return not_found()
+
+
+@app.route('/post/search_nearby/<float:lat>&<float:lon>', methods=['GET'])
+def search_posts(lat, lon):
+    # TODO do geo-spatial query here
+    return
 
 
 @app.route('/post/create/', methods=['POST'])
@@ -87,8 +96,10 @@ def create_post():
                                      'date_created': datetime.timestamp(datetime.now()),
                                      'rating': 0,
                                      'rating_ct': 0,
-                                     'type': 'Point',
-                                     'coordinates': [lat, lon],
+                                     'location': {
+                                        'type': 'Point',
+                                        'coordinates': [lat, lon]
+                                     },
                                      'imgs': [attraction_img_id]})
         return make_response('successfully created post {}'.format(entry_id.inserted_id), 200, headers)
     except:
@@ -165,7 +176,7 @@ def delete_user(post_id):
         return not_found()
 
 
-@app.route('/post/get_attraction_img/<img_id>')
+@app.route('/post/get_attraction_img/<img_id>', methods=['GET'])
 def get_img(img_id):
 
     try:
@@ -179,15 +190,6 @@ def get_img(img_id):
     return response
 
 
-@app.errorhandler(404)
-def not_found(error=None):
-    return make_response('Request not found {}'.format(request.url), 404, headers)
-
-
-if __name__ == '__main__':
-    app.run()
-
-
 def upload_attraction_img(attraction_img):
     attraction_img_name = "attraction_{}".format(date.today())  # image_hash.average_hash(attraction_img)
 
@@ -196,3 +198,12 @@ def upload_attraction_img(attraction_img):
                                       filename=attraction_img_name)
 
     return attraction_img_id
+
+
+@app.errorhandler(404)
+def not_found(error=None):
+    return make_response('Request not found {}'.format(request.url), 404, headers)
+
+
+if __name__ == '__main__':
+    app.run()
