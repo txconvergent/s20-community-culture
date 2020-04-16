@@ -2,6 +2,7 @@ click==7.1.1
 dnspython==1.16.0
 Flask==1.1.1
 Flask-PyMongo==2.3.0
+gunicorn==20.0.4
 ImageHash==4.0
 itsdangerous==1.1.0
 Jinja2==2.11.1
