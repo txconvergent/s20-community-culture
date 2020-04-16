@@ -25,7 +25,7 @@ posts_img = GridFS(posts_db)
 
 headers = {"Content-Type": "application/json"}
 
-posts.createIndex({'location': "2dsphere"})
+# posts.createIndex({'location': "2dsphere"})
 
 '''
 todo add documentation to all methods
