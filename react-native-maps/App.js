@@ -68,7 +68,12 @@ function CameraScreen() {
   }
   return (
     <View style={{ flex: 1 }}>
-      <Camera style={{ flex: 1 }} type={type}>
+      <Camera 
+        ref={ref=>{
+          this.camera = ref;
+        }}
+        style={{ flex: 1 }} 
+        type={type}>
         <View
           style={{
             flex: 1,
@@ -87,9 +92,26 @@ function CameraScreen() {
                   ? Camera.Constants.Type.front
                   : Camera.Constants.Type.back
               );
-            }}>
+            }}
+          >
             <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flex: 0.1,
+              alignSelf: 'flex-end',
+              alignItems: 'center',
+            }}
+            onPress={async () => {
+              if (this.camera) {
+                let photo = await this.camera.takePictureAsync();
+                console.log(photo);
+              }
+            }}
+          >
+            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Take Picture </Text>
+          </TouchableOpacity>
+
         </View>
       </Camera>
     </View>
