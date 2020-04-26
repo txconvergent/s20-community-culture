@@ -4,9 +4,11 @@ import MapView from "react-native-maps";
 import sample_markers from './sample_markers.json';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Camera } from "expo-camera";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function App(){
   return (
@@ -42,14 +44,37 @@ export default function App(){
       >
         <Tab.Screen name="Account" component={AccountScreen} />
         <Tab.Screen name="Map" component={MapScreen} />
-        <Tab.Screen name="Camera" component={CameraScreen} />
+        <Tab.Screen name="Camera" component={CameraNav} />
         <Tab.Screen name="Search" component={SearchScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
-function CameraScreen() {
+function CameraNav() {
+  return (
+    <NavigationContainer independent={true}>
+      <Stack.Navigator 
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="CameraScreen" component={CameraScreen}/>
+        <Stack.Screen name="PhotoScreen" component={PhotoScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function PhotoScreen(){
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Photo</Text>
+    </View>
+  );
+}
+
+function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
 
@@ -106,6 +131,7 @@ function CameraScreen() {
               if (this.camera) {
                 let photo = await this.camera.takePictureAsync();
                 console.log(photo);
+                navigation.navigate("PhotoScreen");
               }
             }}
           >
