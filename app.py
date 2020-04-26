@@ -1,8 +1,9 @@
-from datetime import datetime, date
-from json import dumps
+from datetime import datetime
+from bson.json_util import dumps
 
+import bson
 from bson import ObjectId
-from flask import Flask, make_response, send_file
+from flask import Flask, make_response
 
 from dotenv import load_dotenv
 import os
@@ -25,18 +26,37 @@ posts_img = GridFS(posts_db)
 
 headers = {"Content-Type": "application/json"}
 
-# posts.createIndex({'location': "2dsphere"})
+# posts.create_index()
+posts.create_index([("location", pymongo.GEOSPHERE)])
 
 '''
 todo add documentation to all methods
-Every post shall have 
 
-# Title (title) [string][required]
-# Date Created [date format string]
-# Coords [required][not implemented] [float][float]
-# Image(s) [array][required] - NOTE: PLEASE UPLOAD JPEG IMAGES ONLY FOR NOW
-# No. ratings (scale of 0 - 1) (rating_ct) [int]
-# Avg. rating (rating) [float]
+Form data for creation (send request to /posts/create/ as a multipart/form-data type)
+# title (string): Name of post [required]
+# lon (float): latitude coordinate of post [required]
+# lat (float): longitude coordinate of post [required]
+# attraction_img: jpeg image to upload to server [required]
+
+
+Full Schema - how data is stored and returned
+# _id (ObjectId): index o post document [auto-generated]
+# title (string): post name
+# date_created: timestamp of post creation [auto-generated] 
+# rating (float): average rating of post [0 by default]
+# rating_ct (int): average rating of post [0 by default]
+# location (Object): contains GeoJSON object data 
+    - type (string): type of GeoJSON object ["Point" by default]
+    - coordinates [array]
+        - 0 (float): longitude 
+        - 1 (float): latitude
+# imgs [array]: array of image ids
+    - 0....i (ObjectId): the id of the image document
+    
+NOTE: images are stored in a different collection, which is why we store just their indexes
+I do not know how to return image data as part of other data, so I made a separate path which 
+returns just the image as a jpeg file 
+        
 
 (extra)
 # post creator id [id]
@@ -65,10 +85,36 @@ def get_post(post_id):
         return not_found()
 
 
-@app.route('/post/search_nearby/<float:lat>&<float:lon>', methods=['GET'])
-def search_posts(lat, lon):
+@app.route('/post/search_nearby', methods=['GET'])
+def search_posts():
     # TODO do geo-spatial query here
-    return
+
+    # print(request.args.keys())
+
+    if 'lon' not in request.args or \
+            'lat' not in request.args or \
+            'dist' not in request.args:
+        return make_response('request does not have required fields (lon, lat, dist)', 500, headers)
+
+    lon = float(request.args['lon'])
+    lat = float(request.args['lat'])
+    dist = float(request.args['dist'])
+    print("dist:", dist, ", lon:", lon, ", lat: ", lat)
+    try:
+        nearby_posts_cursor = posts.aggregate([{
+            '$geoNear': {
+                'near': {'type': "Point", 'coordinates': [lon, lat]},
+                # 'key': "location",
+                'distanceField': "dist.calculated",
+                'maxDistance': dist,
+                'spherical': True
+            }
+        }])
+
+        nearby_posts = dumps(nearby_posts_cursor)
+        return nearby_posts
+    except:
+        return not_found()
 
 
 @app.route('/post/create/', methods=['POST'])
@@ -86,21 +132,22 @@ def create_post():
         return make_response('request does not have required fields (title, lat, lon, attraction_img)', 500, headers)
 
     title = request.form['title']
-    lat = request.form['lat']
-    lon = request.form['lon']
+    lon = float(request.form['lon'])
+    lat = float(request.form['lat'])
 
     attraction_img_id = upload_attraction_img(request.files['attraction_img'])
 
     try:
         entry_id = posts.insert_one({'title': title,
-                                     'date_created': datetime.timestamp(datetime.now()),
-                                     'rating': 0,
-                                     'rating_ct': 0,
+                                     'date_created': datetime.today(),
+                                     'rating': float(0),
+                                     'rating_ct': int(0),
                                      'location': {
-                                        'type': 'Point',
-                                        'coordinates': [lat, lon]
+                                         'type': 'Point',
+                                         'coordinates': [lon, lat]
                                      },
                                      'imgs': [attraction_img_id]})
+
         return make_response('successfully created post {}'.format(entry_id.inserted_id), 200, headers)
     except:
         return make_response('failed creating post', 500, headers)
@@ -178,7 +225,6 @@ def delete_user(post_id):
 
 @app.route('/post/get_attraction_img/<img_id>', methods=['GET'])
 def get_img(img_id):
-
     try:
         attraction_img = posts_img.find_one({'_id': ObjectId(img_id)})
     except:
@@ -191,7 +237,7 @@ def get_img(img_id):
 
 
 def upload_attraction_img(attraction_img):
-    attraction_img_name = "attraction_{}".format(date.today())  # image_hash.average_hash(attraction_img)
+    attraction_img_name = "attraction_{}".format(datetime.today())  # image_hash.average_hash(attraction_img)
 
     attraction_img_id = posts_img.put(attraction_img,
                                       content_type=attraction_img.content_type,
