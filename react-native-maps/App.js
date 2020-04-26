@@ -44,15 +44,43 @@ export default function App(){
       >
         <Tab.Screen name="Account" component={AccountScreen} />
         <Tab.Screen name="MapContainer" component={MapPinContainer} />
-        <Tab.Screen name="Camera" component={CameraScreen} />
+        <Tab.Screen name="Camera" component={CameraNav} />
         <Tab.Screen name="Search" component={SearchScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
+function CameraNav() {
+  return (
+    <NavigationContainer independent={true}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="CameraScreen" component={CameraScreen}/>
+        <Stack.Screen name="PhotoScreen" component={PhotoScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
-function CameraScreen() {
+function PhotoScreen({route}){
+  console.log(route.params.uri);
+
+  return (
+    <Image
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      source={{
+        isStatic: true,
+        uri: route.params.uri
+      }}
+    />
+  );
+}
+
+function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
 
@@ -71,7 +99,12 @@ function CameraScreen() {
   }
   return (
     <View style={{ flex: 1 }}>
-      <Camera style={{ flex: 1 }} type={type}>
+      <Camera
+        ref={ref=>{
+          this.camera = ref;
+        }}
+        style={{ flex: 1 }}
+        type={type}>
         <View
           style={{
             flex: 1,
@@ -90,9 +123,27 @@ function CameraScreen() {
                   ? Camera.Constants.Type.front
                   : Camera.Constants.Type.back
               );
-            }}>
+            }}
+          >
             <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flex: 0.1,
+              alignSelf: 'flex-end',
+              alignItems: 'center',
+            }}
+            onPress={async () => {
+              if (this.camera) {
+                let photo = await this.camera.takePictureAsync();
+                console.log(photo);
+                navigation.navigate("PhotoScreen", {uri: photo.uri});
+              }
+            }}
+          >
+            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Take Picture </Text>
+          </TouchableOpacity>
+
         </View>
       </Camera>
     </View>
