@@ -66,11 +66,17 @@ function CameraNav() {
   );
 }
 
-function PhotoScreen(){
+function PhotoScreen({route}){
+  console.log(route.params.uri);
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Photo</Text>
-    </View>
+    <Image
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      source={{
+        isStatic: true,
+        uri: route.params.uri
+      }}
+    />
   );
 }
 
@@ -131,7 +137,7 @@ function CameraScreen({ navigation }) {
               if (this.camera) {
                 let photo = await this.camera.takePictureAsync();
                 console.log(photo);
-                navigation.navigate("PhotoScreen");
+                navigation.navigate("PhotoScreen", {uri: photo.uri});
               }
             }}
           >
