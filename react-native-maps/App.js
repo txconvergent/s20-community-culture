@@ -131,8 +131,8 @@ function PinScreen({ route, navigation }) {
 
 function MapPinContainer(){
   return (
-    <Stack.Navigator  screenOptions={{ headerShown: false  }}>
-      <Stack.Screen name="Map" component={MapScreen}/>
+    <Stack.Navigator  screenOptions={{ headerShown: true  }}>
+      <Stack.Screen name="Map" component={MapScreen} options={({ route }) => ({title: "Picture This!"})}/>
       <Stack.Screen name="Pin" component={PinScreen} options={({ route }) => ({ title: route.params.name })}/>
     </Stack.Navigator>
   );
@@ -170,13 +170,12 @@ class MapScreen extends React.Component {
            longitude: marker.longitude,
        };
        const descrip = `Time Status: ${marker.timeStatus}\nUser Rating: ${marker.userRating}\nAddress: ${marker.stAddress}\nTop comment: ${marker.topComment}`;
-       const navigation = this.props.navigation;
        return (
            <MapView.Marker
               onPress={() => {
                 this.props.navigation.push('Pin', {
                   pinId: marker.id,
-                  name: "Pin Name Here!",
+                  name: marker.attractionName,
                   latitude: marker.latitude,
                   longitude: marker.longitude,
                 });
