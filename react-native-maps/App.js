@@ -28,7 +28,7 @@ export default function App(){
               );
             } else if (route.name === 'MapContainer') {
               return (
-                <Image source={require('./icons/account.png')} style={styles.icon}/>
+                <Image source={require('./icons/mapicon.png')} style={styles.icon}/>
               );
             } else if (route.name === 'Search'){
               return (
@@ -115,19 +115,25 @@ function SearchScreen() {
   );
 }
 
-function PinScreen() {
+function PinScreen({ route, navigation }) {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Pin</Text>
-    </View>
+    <>
+      <View style={styles.ratingBar}>
+        <Text>Rating Percentage Here</Text>
+      </View>
+
+      <View style={styles.imagesFeed}>
+        <Text>You clicked Pin ID: {route.params.pinId}</Text>
+      </View>
+    </>
   );
 }
 
 function MapPinContainer(){
   return (
-    <Stack.Navigator>
+    <Stack.Navigator  screenOptions={{ headerShown: false  }}>
       <Stack.Screen name="Map" component={MapScreen}/>
-      <Stack.Screen name="Pin" component={PinScreen}/>
+      <Stack.Screen name="Pin" component={PinScreen} options={({ route }) => ({ title: route.params.name })}/>
     </Stack.Navigator>
   );
 }
@@ -167,7 +173,14 @@ class MapScreen extends React.Component {
        const navigation = this.props.navigation;
        return (
            <MapView.Marker
-              onPress={() => this.props.navigation.push('Pin')}
+              onPress={() => {
+                this.props.navigation.push('Pin', {
+                  pinId: marker.id,
+                  name: "Pin Name Here!",
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                });
+              }}
               key={index}
               coordinate={coords}
               title={marker.attractionName}
@@ -212,5 +225,13 @@ const styles = StyleSheet.create({
   icon: {
     width: 40,
     height: 40,
+  },
+  ratingBar: {
+    height: 20,
+  },
+  imagesFeed: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
