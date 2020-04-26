@@ -27,7 +27,7 @@ posts_img = GridFS(posts_db)
 headers = {"Content-Type": "application/json"}
 
 # posts.create_index()
-posts.create_index([("location", pymongo.GEOSPHERE)])
+# posts.create_index([("location", pymongo.GEOSPHERE)])
 
 '''
 todo add documentation to all methods
