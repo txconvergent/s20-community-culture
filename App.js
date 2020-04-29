@@ -2,8 +2,12 @@ import * as React from 'react';
 import 'react-native-gesture-handler';
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity} from 'react-native';
 import {KeyboardAvoidingView, StatusBar} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer, TabActions} from '@react-navigation/native';
+import {createStackNavigator, CardStyleInterpolators} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function TitleScreen({navigation}) {
   return(
@@ -18,7 +22,7 @@ function TitleScreen({navigation}) {
               <Image 
                 style = {styles.logo}
                 source = {require('./images/PictureThisLogo.png')} 
-                resizeMode = 'contain'
+                resizeMode = "contain"
               />
           </TouchableOpacity>
       </View>
@@ -35,7 +39,7 @@ function UserScreen({navigation}) {
             style = {styles.input}
             placeholder = "username or email"
             returnKeyType = "next"
-            onSubmitEditing = {() => this.passwordInput.focus()}
+            onSubmitEditing = {() => this.password.focus()}
             keyboardType = "email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -44,9 +48,9 @@ function UserScreen({navigation}) {
             style = {styles.input}
             placeholder = "password"
             secureTextEntry
-            ref = {(input) => this.passwordInput = input}
+            ref = {(input) => this.password = input}
         />
-        <TouchableOpacity style = {styles.buttonContainer}>
+        <TouchableOpacity onPress ={() => navigation.navigate('HomeScreen')} style = {styles.buttonContainer}>
           <Text style = {styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -54,14 +58,73 @@ function UserScreen({navigation}) {
   );
 }
 
-const Stack = createStackNavigator();
+function HomeScreen({navigation}) {
+  return (
+    <NavigationContainer independent = {true}>
+      <Tab.Navigator
+        screenOptions = {({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'HotSpot') {
+              return (
+                <Image source = {require('./images/fire.jpg')} style = {styles.icon} />
+              );
+            } else if (route.name === 'Settings') {
+              return (
+                <Image source = {require('./images/user.png')} style = {styles.icon}/>
+              );
+            } else if (route.name === 'Camera') {
+              return(
+                <Image source = {require('./images/camera.png')} style = {styles.icon}/>
+              );
+            }
+          }
+        })}
+        tabBarOptions = {{
+          style: styles.buttonRow,
+          showLabel: false,
+        }}
+      >
+        <Tab.Screen name = "HotSpot" component = {HotSpotScreen} />
+        <Tab.Screen name = "Camera" component = {CameraScreen} />
+        <Tab.Screen name = "Settings" component = {SettingsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function HotSpotScreen({route}) {
+  return (
+    <NavigationContainer independent = {true}>
+
+    </NavigationContainer>
+  );
+}
+
+function CameraScreen({route}) {
+  return(
+    <NavigationContainer independent = {true}>
+
+    </NavigationContainer>
+  );
+}
+
+function SettingsScreen({route}) {
+  return(
+    <NavigationContainer independent = {true}>
+
+    </NavigationContainer>
+  )
+}
 
 function App() {
   return(
     <NavigationContainer independent = {true}>
-      <Stack.Navigator initialRouteName = "Title">
-        <Stack.Screen name = "Title" component = {TitleScreen} />
-        <Stack.Screen name = "User" component = {UserScreen} />
+      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName = "Home">
+        <Stack.Screen name = "TitleScreen" component = {TitleScreen} />
+        <Stack.Screen name = "UserScreen" component = {UserScreen} />
+        <Stack.Screen name = "HomeScreen" component = {HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -116,17 +179,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  fire: {
-    height: 100,
-    width: 100,
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#bdeaff',
+    paddingBottom: 20,
   },
 
-  title: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 100,
-
+  icon: {
+    width: 40,
+    height: 40,
   }
+
+  
   
 });
 
