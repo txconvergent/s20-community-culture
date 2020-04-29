@@ -224,6 +224,8 @@ class MapScreen extends React.Component {
        return (
            <MapView.Marker
               onPress={() => {
+                getPinName();
+
                 this.props.navigation.push('Pin', {
                   pinId: marker.id,
                   name: marker.attractionName,
@@ -256,6 +258,19 @@ class MapScreen extends React.Component {
     });
     }
 };
+
+function getPinName(pin_id="pin id from database here") {
+  return fetch('https://peaceful-falls-21154.herokuapp.com/post/'+pin_id, {
+    method: 'GET',
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json.title);
+    })
+    .catch(error => {
+      console.error(error);
+    })
+}
 
 const styles = StyleSheet.create({
   buttonRow: {
