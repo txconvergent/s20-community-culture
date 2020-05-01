@@ -170,7 +170,7 @@ function PinScreen({ route, navigation }) {
   return (
     <>
       <View style={styles.ratingBar}>
-        <Text>Rating Percentage Here</Text>
+        <Text>Rating: {route.params.rating}</Text>
       </View>
 
       <View style={styles.imagesFeed}>
@@ -222,25 +222,24 @@ class MapScreen extends React.Component {
            longitude: marker.location.coordinates[0],
          };
 
-       const descrip = `Title: ${marker.title}\nUser Rating: ${marker.rating}\nDate Created: ${marker.date_created}`;
+       const descrip = `User Rating: ${marker.rating}\nDate Created: ${marker.date_created}`;
 
        return (
            <MapView.Marker
               onPress={() => {
-                getPinName();
-
                 this.props.navigation.push('Pin', {
-                  pinId: marker.id,
-                  name: marker.attractionName,
+                  pinId: marker._id.$oid,
+                  name: marker.title,
+                  rating: marker.rating,
                   latitude: marker.latitude,
                   longitude: marker.longitude,
                 });
               }}
               key={index}
               coordinate={coords}
-              title={marker.attractionName}
+              title={marker.title}
               description={descrip}
-              pinColor={marker.pinColor}
+              pinColor={'blue'}
            />
        );
         })}
@@ -271,19 +270,6 @@ class MapScreen extends React.Component {
     }
 };
 
-
-function getPinName(pin_id="pin id from database here") {
-  return fetch('https://peaceful-falls-21154.herokuapp.com/post/'+pin_id, {
-    method: 'GET',
-  })
-    .then(response => response.json())
-    .then(json => {
-      console.log(json.title);
-    })
-    .catch(error => {
-      console.error(error);
-    })
-}
 
 const styles = StyleSheet.create({
   buttonRow: {
