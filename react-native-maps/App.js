@@ -215,12 +215,15 @@ class MapScreen extends React.Component {
             longitudeDelta: 0.0421,
           }}
         >
-          {this.state.isLoading ? null : this.state.markers.map((marker, index) => {
+
+      { this.state.isLoading ? null : this.state.markers.map((marker, index) => {
         const coords = {
-           latitude: marker.latitude,
-           longitude: marker.longitude,
-       };
-       const descrip = `Time Status: ${marker.timeStatus}\nUser Rating: ${marker.userRating}\nAddress: ${marker.stAddress}\nTop comment: ${marker.topComment}`;
+           latitude: marker.location.coordinates[1],
+           longitude: marker.location.coordinates[0],
+         };
+
+       const descrip = `Title: ${marker.title}\nUser Rating: ${marker.rating}\nDate Created: ${marker.date_created}`;
+
        return (
            <MapView.Marker
               onPress={() => {
@@ -252,12 +255,22 @@ class MapScreen extends React.Component {
   }
 
   fetchMarkerData() {
-    this.setState({
-      isLoading: false,
-      markers: sample_markers.attractionList,
-    });
+    fetch('https://peaceful-falls-21154.herokuapp.com/posts', {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({
+          isLoading: false,
+          markers: json,
+        });
+      })
+      .catch(error =>{
+        console.error(error);
+      })
     }
 };
+
 
 function getPinName(pin_id="pin id from database here") {
   return fetch('https://peaceful-falls-21154.herokuapp.com/post/'+pin_id, {
