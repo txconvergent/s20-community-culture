@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground } from "react-native";
 import MapView from "react-native-maps";
 import sample_markers from './sample_markers.json';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
@@ -66,17 +66,46 @@ function CameraNav() {
   );
 }
 
-function PhotoScreen({route}){
-  console.log(route.params.uri);
+function PhotoScreen({route, navigation}){
+  var formData = new FormData();
 
   return (
-    <Image
+    <ImageBackground
       style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
       source={{
         isStatic: true,
         uri: route.params.uri
-      }}
-    />
+      }}>
+      <TouchableOpacity
+            style={{
+              flex: 0.1,
+              alignSelf: 'flex-end',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              console.log("Submit Photo");
+              console.log(formData);
+              fetch('https://peaceful-falls-21154.herokuapp.com/post/create', {
+                method: 'POST',
+                //body: formData
+              })
+              .then(response => {
+                return JSON.stringify(response);
+              })
+              .then(result => {
+                console.log('Success:', result);
+              })
+              .catch(error => {
+                //console.error(error);
+              })
+              navigation.pop();
+            }
+          }
+        >
+        <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Submit </Text>
+      </TouchableOpacity>
+    </ImageBackground>
+    
   );
 }
 
