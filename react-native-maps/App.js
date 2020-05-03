@@ -196,7 +196,8 @@ class MapScreen extends React.Component {
     this.state = {
       isLoading: true,
       markers: [],
-      pressCoords: [],
+      pressLat: 0,
+      pressLon: 0,
     };
 
   }
@@ -217,11 +218,11 @@ class MapScreen extends React.Component {
           }}
 
           onPress = {e => {
-            this.setState({
-              pressCoords: [e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude],
+            console.log(e.nativeEvent);
+            this.setState({ pressLat: e.nativeEvent.coordinate.latitude, pressLon: e.nativeEvent.coordinate.longitude}, () => {
+              console.log(this.state);
+              this.fetchMarkerData();
             });
-
-            this.fetchMarkerData();
           }}
         >
 
@@ -263,14 +264,10 @@ class MapScreen extends React.Component {
   }
 
   fetchMarkerData() {
-    fetch('https://peaceful-falls-21154.herokuapp.com/post/search_nearby', {
+    const link = 'https://peaceful-falls-21154.herokuapp.com/post/search_nearby?lon=' + this.state.pressLon.toString() + '&lat=' + this.state.pressLat.toString() + '&dist=10000';
+    console.log(link);
+    fetch(link, {
       method: 'GET',
-      // pass args here?
-      body: JSON.stringify({
-        lon: this.state.pressCoords[1],
-        lat: this.state.pressCoords[0],
-        dist: 1,
-      }),
     })
       .then(response => response.json())
       .then(json => {
