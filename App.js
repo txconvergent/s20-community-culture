@@ -5,7 +5,6 @@ import {KeyboardAvoidingView, ScrollView} from 'react-native';
 import {NavigationContainer, TabActions} from '@react-navigation/native';
 import {createStackNavigator, CardStyleInterpolators} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Constants from 'expo-constants';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -33,13 +32,15 @@ function TitleScreen({navigation}) {
 function UserScreen({navigation}) {
   return (
     <NavigationContainer independent = {true}>
+      <View style = {styles.container}>
+        <Image
+          style = {styles.loginLogo}
+          source = {require('./images/PictureThisLogo.png')}
+          resizeMode = 'contain'
+        />
+      </View>
       <KeyboardAvoidingView behavior= "padding" style = {styles.container}>
         <StatusBar barStyle = "light-content"/>
-        {/* <Image 
-          source = {require('./images/PictureThisLogo.png')} 
-          style = {styles.titleLogo}
-          resizeMode = 'contain'
-        /> */}
         <TextInput 
             style = {styles.input}
             placeholder = "username or email"
@@ -57,7 +58,54 @@ function UserScreen({navigation}) {
             secureTextEntry = {true}
         />
         <TouchableOpacity onPress ={() => navigation.navigate('TabScreen')} style = {styles.buttonContainer}>
-          <Text style = {styles.buttonText}>LOGIN</Text>
+          <Text style = {styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <View style = {styles.LoginSignUp}>
+            <Text style = {styles.SignUpText}>Don't have an Account? </Text>
+            <Text  onPress = {() => navigation.navigate('SignUpScreen')} style = {styles.SignUpButton}>Sign Up!</Text>
+        </View>
+      </KeyboardAvoidingView>
+    </NavigationContainer>
+  );
+}
+
+function SignUpScreen({navigation}) {
+  return(
+    <NavigationContainer independent = {true}>
+      <View style = {styles.container}>
+        <Image
+          style = {styles.loginLogo}
+          source = {require('./images/PictureThisLogo.png')}
+          resizeMode = 'contain'
+        />
+      </View>
+      <KeyboardAvoidingView behavior= "padding" style = {styles.container}>
+        <StatusBar barStyle = "light-content"/>
+        <TextInput 
+            style = {styles.input}
+            placeholder = "first and last name"
+            placeholderTextColor = '#ffffff'
+            returnKeyType = "next"
+            autoCapitalize="none"
+            autoCorrect={false}
+        />
+         <TextInput 
+            style = {styles.input}
+            placeholder = "username or email"
+            placeholderTextColor = '#ffffff'
+            returnKeyType = "next"
+            keyboardType = "email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+        />
+        <TextInput 
+            style = {styles.input}
+            placeholder = "password"
+            placeholderTextColor = '#ffffff'
+            secureTextEntry = {true}
+        />
+        <TouchableOpacity onPress ={() => navigation.navigate('TabScreen')} style = {styles.buttonContainer}>
+          <Text style = {styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </NavigationContainer>
@@ -111,10 +159,10 @@ function HomeScreen() {
   return (
     <View style={styles.pages}>
         <StatusBar barStyle = "light-content"/>
-        <Image source = {require('./images/menu.jpg')} style = {styles.menuIcon}/>
+        <Image source = {require('./images/menu.png')} style = {{width: 50, height: 50, marginTop: 40, marginLeft: 20, borderRadius: 10,}}/>
         <Text 
           style = {{
-            marginVertical: 250,
+            marginVertical: 70,
             marginHorizontal: 60,
             fontSize: 50}}>HOME PAGE</Text>
     </View>
@@ -124,7 +172,7 @@ function HomeScreen() {
 function HotSpotScreen() {
   return (
     <ScrollView style={styles.pages}>
-        <StatusBar barStyle = "dark-content"/>
+        <StatusBar barStyle = "light-content"/>
         <Image source = {require('./images/tower.jpg')} style = {styles.galleryImages}/>
         <Image source = {require('./images/nightTower.jpg')} style = {styles.galleryImages}/>
         <Image source = {require('./images/tower3.jpg')} style = {styles.galleryImages}/>
@@ -172,6 +220,7 @@ function App() {
         <Stack.Screen name = "TitleScreen" component = {TitleScreen} />
         <Stack.Screen name = "UserScreen" component = {UserScreen} />
         <Stack.Screen name = "TabScreen" component = {TabScreen} />
+        <Stack.Screen name = "SignUpScreen" component = {SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -179,14 +228,14 @@ function App() {
 
 
 const styles = StyleSheet.create({
+  //general page style guidelines
   container: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#C2185B',
+    backgroundColor: '#AD1457',
     justifyContent: "center",
     alignItems: 'center',
   },
-
+  //title page
   titleText: {
     fontSize : 50,
     fontWeight : '500',
@@ -194,6 +243,9 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     color: "#ffffff",
     paddingBottom: 250,
+    textShadowColor: '#880E4F',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 3,
   },
 
   logo: {
@@ -203,38 +255,74 @@ const styles = StyleSheet.create({
     top: 100,
   },
 
+  //Login Screen
+  loginLogo: {
+    flexGrow: 1,
+    width: 300,
+  },
+
   input: {
     height: 60,
-    width: 250,
+    width: 300,
+    fontSize: 16,
     backgroundColor: '#EF9A9A',
-    //text input color -> need to change
     color: 'white',
     paddingHorizontal: 20,
-    marginBottom: 40,
-    borderRadius: 10,
+    marginBottom: 30,
+    borderRadius: 50,
   },
 
   buttonContainer: {
     backgroundColor: "#E57373",
-    width: 125,
+    width: 200,
     height: 40,
     paddingVertical: 5,
+    borderRadius: 50,
   },
 
   buttonText: {
-    fontSize: 25,
+    fontSize: 24,
     textAlign: 'center',
     fontFamily: 'Times New Roman',
+    textShadowColor: '#000',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: 1,
     fontWeight: '500',
     color: '#ffffff'
   },
 
+  LoginSignUp: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginVertical: 16,
+    flexDirection: 'row',
+  },
+
+  SignUpText: {
+    color: 'white',
+    fontSize: 16,
+    textShadowColor: '#000',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: 1,
+  },
+
+  SignUpButton: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '900',
+    textShadowColor: '#000',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: 1,
+  },
+
+  //Tab Navigation
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#C2185B',
-    height: 75,
+    backgroundColor: '#AD1457',
+    height: 65,
   },
 
   icon: {
@@ -276,7 +364,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 10,
   },
-
   
 });
 
