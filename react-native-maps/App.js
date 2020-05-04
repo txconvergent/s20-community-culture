@@ -191,19 +191,26 @@ function MapPinContainer(){
 
 
 class MapScreen extends React.Component {
+
   constructor(props){
     super(props);
     this.state = {
       isLoading: true,
       markers: [],
-      pressLat: 0,
-      pressLon: 0,
+      currRegion: {
+        latitude: 30.267032,
+        longitude: -97.742209,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
+      press: {
+        latitude: 0,
+        longitude: 0,
+      },
     };
 
   }
-
   render() {
-
     return (
         <MapView
           style={{ flex: 1 }}
@@ -218,11 +225,22 @@ class MapScreen extends React.Component {
             longitudeDelta: 0.0421,
           }}
 
+          onRegionChangeComplete = {(region) => {
+            this.setState({
+              currRegion: region,
+            })
+          }}
+
           onPress = {e => {
             console.log(e.nativeEvent);
-            this.setState({ pressLat: e.nativeEvent.coordinate.latitude, pressLon: e.nativeEvent.coordinate.longitude}, () => {
-              console.log(this.state);
-              this.fetchMarkerData();
+            this.setState({
+              press: {
+                latitude: e.nativeEvent.coordinate.latitude,
+                longitude: e.nativeEvent.coordinate.longitude,
+              }},
+              () => {
+                console.log(this.state);
+                this.fetchMarkerData();
             });
           }}
         >
@@ -265,7 +283,9 @@ class MapScreen extends React.Component {
   }
 
   fetchMarkerData() {
-    const link = 'https://peaceful-falls-21154.herokuapp.com/post/search_nearby?lon=' + this.state.pressLon.toString() + '&lat=' + this.state.pressLat.toString() + '&dist=10000';
+    const degreeLatInMeters = 111120;
+    const link = 'https://peaceful-falls-21154.herokuapp.com/post/search_nearby?lon=' +
+      this.state.press.longitude.toString() + '&lat=' + this.state.press.latitude.toString() + '&dist=' + this.state.currRegion.latitudeDelta * degreeLatInMeters;
     console.log(link);
     fetch(link, {
       method: 'GET',
