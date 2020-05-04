@@ -203,6 +203,7 @@ class MapScreen extends React.Component {
   }
 
   render() {
+
     return (
         <MapView
           style={{ flex: 1 }}
@@ -210,7 +211,7 @@ class MapScreen extends React.Component {
           mapType="hybrid"
           showsMyLocationButton
           showsUserLocation
-          region={{
+          initialRegion={{
             latitude: 30.267032,
             longitude: -97.742209,
             latitudeDelta: 0.0922,
@@ -249,7 +250,7 @@ class MapScreen extends React.Component {
               coordinate={coords}
               title={marker.title}
               description={descrip}
-              pinColor={'blue'}
+              pinColor={'red'}
            />
        );
         })}
