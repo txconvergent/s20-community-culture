@@ -191,15 +191,25 @@ function MapPinContainer(){
 
 
 class MapScreen extends React.Component {
+
   constructor(props){
     super(props);
     this.state = {
       isLoading: true,
       markers: [],
+      currRegion: {
+        latitude: 30.267032,
+        longitude: -97.742209,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
+      press: {
+        latitude: 0,
+        longitude: 0,
+      },
     };
 
   }
-
   render() {
     return (
         <MapView
@@ -208,11 +218,30 @@ class MapScreen extends React.Component {
           mapType="hybrid"
           showsMyLocationButton
           showsUserLocation
-          region={{
+          initialRegion={{
             latitude: 30.267032,
             longitude: -97.742209,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
+          }}
+
+          onRegionChangeComplete = {(region) => {
+            this.setState({
+              currRegion: region,
+            })
+          }}
+
+          onPress = {e => {
+            console.log(e.nativeEvent);
+            this.setState({
+              press: {
+                latitude: e.nativeEvent.coordinate.latitude,
+                longitude: e.nativeEvent.coordinate.longitude,
+              }},
+              () => {
+                console.log(this.state);
+                this.fetchMarkerData();
+            });
           }}
         >
 
@@ -239,7 +268,7 @@ class MapScreen extends React.Component {
               coordinate={coords}
               title={marker.title}
               description={descrip}
-              pinColor={'blue'}
+              pinColor={'red'}
            />
        );
         })}
@@ -250,15 +279,20 @@ class MapScreen extends React.Component {
 
 
   componentDidMount() {
-    this.fetchMarkerData();
+    // this.fetchMarkerData();
   }
 
   fetchMarkerData() {
-    fetch('https://peaceful-falls-21154.herokuapp.com/posts', {
+    const degreeLatInMeters = 111120;
+    const link = 'https://peaceful-falls-21154.herokuapp.com/post/search_nearby?lon=' +
+      this.state.press.longitude.toString() + '&lat=' + this.state.press.latitude.toString() + '&dist=' + this.state.currRegion.latitudeDelta * degreeLatInMeters;
+    console.log(link);
+    fetch(link, {
       method: 'GET',
     })
       .then(response => response.json())
       .then(json => {
+        console.log(json);
         this.setState({
           isLoading: false,
           markers: json,
