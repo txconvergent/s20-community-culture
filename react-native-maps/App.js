@@ -78,16 +78,21 @@ function PhotoScreen({route, navigation}){
 
   return (
     <ImageBackground
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', flexDirection: "column" }}
       source={{
         isStatic: true,
         uri: route.params.uri
       }}>
       <TouchableOpacity
             style={{
-              flex: 0.1,
+              flex: 0.2,
               alignSelf: 'flex-end',
               alignItems: 'center',
+              backgroundColor: 'blue',
+              justifyContent:'center',
+              backgroundColor:'blue',
+              borderRadius:20,
+              margin: 10,
             }}
             onPress={() => {
               console.log("Submit Photo");
@@ -109,7 +114,7 @@ function PhotoScreen({route, navigation}){
             }
           }
         >
-        <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Submit </Text>
+        <Image source={require('./icons/send.png')} style={styles.icon}/>
       </TouchableOpacity>
     </ImageBackground>
     
@@ -146,12 +151,18 @@ function CameraScreen({ navigation }) {
             flex: 1,
             backgroundColor: 'transparent',
             flexDirection: 'row',
+            justifyContent: 'flex-end'
           }}>
           <TouchableOpacity
             style={{
-              flex: 0.1,
+              flex: 0.2,
               alignSelf: 'flex-end',
               alignItems: 'center',
+              backgroundColor: 'blue',
+              justifyContent:'center',
+              backgroundColor:'blue',
+              borderRadius:20,
+              margin: 10,
             }}
             onPress={() => {
               setType(
@@ -161,13 +172,17 @@ function CameraScreen({ navigation }) {
               );
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+            <Image source={require('./icons/flip.png')} style={styles.icon}/>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
-              flex: 0.1,
+              flex: 0.2,
               alignSelf: 'flex-end',
               alignItems: 'center',
+              justifyContent:'center',
+              backgroundColor:'blue',
+              borderRadius:20,
+              margin: 10,
             }}
             onPress={async () => {
               if (this.camera) {
@@ -177,7 +192,7 @@ function CameraScreen({ navigation }) {
               }
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Take Picture </Text>
+            <Image source={require('./icons/camera.png')} style={styles.icon}/>
           </TouchableOpacity>
 
         </View>
