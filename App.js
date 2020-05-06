@@ -1,33 +1,39 @@
 import * as React from 'react';
 import 'react-native-gesture-handler';
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar, ImageBackground} from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar} from 'react-native';
 import {KeyboardAvoidingView, ScrollView} from 'react-native';
-import {NavigationContainer, TabActions} from '@react-navigation/native';
-import {createStackNavigator, CardStyleInterpolators} from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function TitleScreen({navigation}) {
-  return(
-    <NavigationContainer independent = {true}>
-      <View style={styles.container}>
-          <StatusBar barStyle = "light-content"/>
-          <TouchableOpacity onPress = {() => navigation.navigate('UserScreen')} >
-            <Image 
-                style = {styles.logo}
-                source = {require('./images/TitleLogo.png')} 
-                resizeMode = "contain"
-            />
-            <Text adjustsFontSizeToFit = {true}
-                numberOfLines= {1}
-                style = {styles.titleText}>PictureThis!</Text>
-          </TouchableOpacity>
-      </View>
-    </NavigationContainer>
-  );
-}
+const stylesByPlatform = Platform.select({
+  ios: { fontFamily: 'Roboto' },
+  android: { },
+})
+
+function TitleScreen({navigation, props}) {
+    return(
+      <NavigationContainer independent = {true}>
+        <View style={styles.container}>
+            <StatusBar barStyle = "light-content"/>
+            <TouchableOpacity onPress = {() => navigation.navigate('UserScreen')} >
+              <Image 
+                  style = {styles.logo}
+                  source = {require('./images/TitleLogo.png')} 
+                  resizeMode = "contain"
+              />
+              <Text adjustsFontSizeToFit = {true}
+                  numberOfLines= {1}
+                  style = {styles.titleText}>PictureThis!</Text>
+            </TouchableOpacity>
+        </View>
+      </NavigationContainer>
+    );
+  }
 
 function UserScreen({navigation}) {
   return (
@@ -39,6 +45,7 @@ function UserScreen({navigation}) {
           resizeMode = 'contain'
         />
       </View>
+      <Text style = {styles.userTitle}>PictureThis!</Text>
       <KeyboardAvoidingView behavior= "padding" style = {styles.container}>
         <StatusBar barStyle = "light-content"/>
         <TextInput 
@@ -115,7 +122,7 @@ function SignUpScreen({navigation}) {
 function TabScreen({navigation}) {
   return (
     <NavigationContainer independent = {true}>
-      <StatusBar barStyle = "dark-content"/>
+      <StatusBar barStyle = "light-content"/>
       <Tab.Navigator 
         screenOptions = {({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -158,8 +165,8 @@ function TabScreen({navigation}) {
 function HomeScreen() {
   return (
     <View style={styles.pages}>
-        <StatusBar barStyle = "light-content"/>
-        <Image source = {require('./images/menu.png')} style = {{width: 50, height: 50, marginTop: 40, marginLeft: 20, borderRadius: 10,}}/>
+        <StatusBar barStyle = "dark-content"/>
+        <Image source = {require('./images/menu.png')} style = {{width: 50, height: 50, marginTop: 30, marginLeft: 20, borderRadius: 10,}}/>
         <Text 
           style = {{
             marginVertical: 70,
@@ -172,7 +179,7 @@ function HomeScreen() {
 function HotSpotScreen() {
   return (
     <ScrollView style={styles.pages}>
-        <StatusBar barStyle = "light-content"/>
+        <StatusBar barStyle = "dark-content"/>
         <Image source = {require('./images/tower.jpg')} style = {styles.galleryImages}/>
         <Image source = {require('./images/nightTower.jpg')} style = {styles.galleryImages}/>
         <Image source = {require('./images/tower3.jpg')} style = {styles.galleryImages}/>
@@ -185,7 +192,7 @@ function HotSpotScreen() {
 function CameraScreen() {
   return(
     <View style={styles.pages}>
-        <StatusBar barStyle = "light-content"/>
+        <StatusBar barStyle = "dark-content"/>
         <Text 
           style = {{
             marginVertical: 250,
@@ -198,7 +205,7 @@ function CameraScreen() {
 function SettingsScreen() {
   return(
     <View style={styles.pages}>
-        <StatusBar barStyle = "light-content"/>
+        <StatusBar barStyle = "dark-content"/>
         <View style = {styles.rectangle}>
           <Text styles = {styles.settingsText}>PROFILE</Text>
         </View>
@@ -231,7 +238,8 @@ const styles = StyleSheet.create({
   //general page style guidelines
   container: {
     flex: 1,
-    backgroundColor: '#AD1457',
+    backgroundColor: '#aa192f',
+    //backgroundColor: '#c1273f',
     justifyContent: "center",
     alignItems: 'center',
   },
@@ -239,7 +247,6 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize : 50,
     fontWeight : '500',
-    fontFamily: "Times New Roman",
     paddingLeft: 25,
     color: "#ffffff",
     paddingBottom: 250,
@@ -259,6 +266,17 @@ const styles = StyleSheet.create({
   loginLogo: {
     flexGrow: 1,
     width: 300,
+  },
+
+  userTitle: {
+    fontSize: 50,
+    fontWeight: '500',
+    paddingBottom: 70,
+    paddingLeft: 90,
+    backgroundColor: '#aa192f',
+    alignItems: 'center',
+    color: 'white',
+
   },
 
   input: {
@@ -283,7 +301,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     textAlign: 'center',
-    fontFamily: 'Times New Roman',
     textShadowColor: '#000',
     textShadowOffset: {width: 0.5, height: 0.5},
     textShadowRadius: 1,
@@ -321,7 +338,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#AD1457',
+    backgroundColor: '#aa192f',
     height: 65,
   },
 
@@ -333,7 +350,7 @@ const styles = StyleSheet.create({
 
   pages: {
     flex: 1,
-    backgroundColor: '#EF9A9A',
+    backgroundColor: '#ffffff',
   },
 
   menuIcon: {
