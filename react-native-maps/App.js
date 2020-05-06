@@ -68,6 +68,13 @@ function CameraNav() {
 
 function PhotoScreen({route, navigation}){
   var formData = new FormData();
+  formData.append("title", "0");
+  formData.append("lat", "1");
+  formData.append("lon", "2");
+  formData.append('attraction_img', {
+    uri: route.params.uri,
+    name: 'file.jpg'
+  });
 
   return (
     <ImageBackground
@@ -85,9 +92,9 @@ function PhotoScreen({route, navigation}){
             onPress={() => {
               console.log("Submit Photo");
               console.log(formData);
-              fetch('https://peaceful-falls-21154.herokuapp.com/post/create', {
+              fetch('https://peaceful-falls-21154.herokuapp.com/post/create/', {
                 method: 'POST',
-                //body: formData
+                body: formData
               })
               .then(response => {
                 return JSON.stringify(response);
@@ -96,7 +103,7 @@ function PhotoScreen({route, navigation}){
                 console.log('Success:', result);
               })
               .catch(error => {
-                //console.error(error);
+                console.error(error);
               })
               navigation.pop();
             }
