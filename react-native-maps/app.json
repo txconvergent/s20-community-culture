@@ -2,6 +2,8 @@
   "expo": {
     "name": "PictureThis",
     "slug": "PictureThis",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android",
@@ -22,7 +24,17 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.yourappname",
+      "config": {
+        "googleMapsApiKey": "iOS Maps API key"
+      }
+    },
+    "android": {
+      "package": "com.yourcompany.yourappname",
+      "config": {
+        "googleMaps": { "apiKey": "Android Maps API key"}
+      }
     }
   }
 }

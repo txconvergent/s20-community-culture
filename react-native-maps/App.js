@@ -1,3 +1,4 @@
+<<<<<<< HEAD:App.js
 import * as React from 'react';
 import 'react-native-gesture-handler';
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar} from 'react-native';
@@ -5,11 +6,24 @@ import {KeyboardAvoidingView, ScrollView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+=======
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar, ImageBackground} from 'react-native';
+import { KeyboardAvoidingView, ScrollView } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import TabActions from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import CardStyleInterpolators from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MapView from 'react-native-maps';
+import { Camera } from "expo-camera";
+>>>>>>> 1accc9d07e9eb8e730f2565633f15c43f59403d8:react-native-maps/App.js
 
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+<<<<<<< HEAD:App.js
 const stylesByPlatform = Platform.select({
   ios: { fontFamily: 'Roboto' },
   android: { },
@@ -34,6 +48,27 @@ function TitleScreen({navigation, props}) {
       </NavigationContainer>
     );
   }
+=======
+function TitleScreen({navigation}) {
+  return(
+    <NavigationContainer independent = {true}>
+      <View style={styles.container}>
+          <StatusBar barStyle = "light-content"/>
+          <TouchableOpacity onPress = {() => navigation.navigate('UserScreen')} >
+            <Image
+                style = {styles.logo}
+                source = {require('./images/TitleLogo.png')}
+                resizeMode = "contain"
+            />
+            <Text adjustsFontSizeToFit = {true}
+                numberOfLines= {1}
+                style = {styles.titleText}>PictureThis!</Text>
+          </TouchableOpacity>
+      </View>
+    </NavigationContainer>
+  );
+}
+>>>>>>> 1accc9d07e9eb8e730f2565633f15c43f59403d8:react-native-maps/App.js
 
 function UserScreen({navigation}) {
   return (
@@ -48,7 +83,7 @@ function UserScreen({navigation}) {
       <Text style = {styles.userTitle}>PictureThis!</Text>
       <KeyboardAvoidingView behavior= "padding" style = {styles.container}>
         <StatusBar barStyle = "light-content"/>
-        <TextInput 
+        <TextInput
             style = {styles.input}
             placeholder = "username or email"
             placeholderTextColor = '#ffffff'
@@ -58,7 +93,7 @@ function UserScreen({navigation}) {
             autoCapitalize="none"
             autoCorrect={false}
         />
-        <TextInput 
+        <TextInput
             style = {styles.input}
             placeholder = "password"
             placeholderTextColor = '#ffffff'
@@ -88,7 +123,7 @@ function SignUpScreen({navigation}) {
       </View>
       <KeyboardAvoidingView behavior= "padding" style = {styles.container}>
         <StatusBar barStyle = "light-content"/>
-        <TextInput 
+        <TextInput
             style = {styles.input}
             placeholder = "first and last name"
             placeholderTextColor = '#ffffff'
@@ -96,7 +131,7 @@ function SignUpScreen({navigation}) {
             autoCapitalize="none"
             autoCorrect={false}
         />
-         <TextInput 
+         <TextInput
             style = {styles.input}
             placeholder = "username or email"
             placeholderTextColor = '#ffffff'
@@ -105,7 +140,7 @@ function SignUpScreen({navigation}) {
             autoCapitalize="none"
             autoCorrect={false}
         />
-        <TextInput 
+        <TextInput
             style = {styles.input}
             placeholder = "password"
             placeholderTextColor = '#ffffff'
@@ -122,8 +157,13 @@ function SignUpScreen({navigation}) {
 function TabScreen({navigation}) {
   return (
     <NavigationContainer independent = {true}>
+<<<<<<< HEAD:App.js
       <StatusBar barStyle = "light-content"/>
       <Tab.Navigator 
+=======
+      <StatusBar barStyle = "dark-content"/>
+      <Tab.Navigator
+>>>>>>> 1accc9d07e9eb8e730f2565633f15c43f59403d8:react-native-maps/App.js
         screenOptions = {({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
@@ -152,22 +192,127 @@ function TabScreen({navigation}) {
           showLabel: false,
         }}
       >
-        <Tab.Screen name = "HomeScreen" component = {HomeScreen} />
+        <Tab.Screen name = "HomeScreen" component = {MapPinContainer} />
         <Tab.Screen name = "HotSpotScreen" component = {HotSpotScreen} />
-        <Tab.Screen name = "CameraScreen" component = {CameraScreen} />
+        <Tab.Screen name = "CameraScreen" component = {CameraNav} />
         <Tab.Screen name = "SettingsScreen" component = {SettingsScreen} />
+
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
+function CameraNav() {
+  return (
+    <NavigationContainer independent={true}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="CameraScreen" component={CameraScreen}/>
+        <Stack.Screen name="PhotoScreen" component={PhotoScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function PhotoScreen({route}){
+  console.log(route.params.uri);
+
+  return (
+    <Image
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      source={{
+        isStatic: true,
+        uri: route.params.uri
+      }}
+    />
+  );
+}
+
+function CameraScreen({ navigation }) {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+  return (
+    <View style={{ flex: 1 }}>
+      <Camera
+        ref={ref=>{
+          this.camera = ref;
+        }}
+        style={{ flex: 1 }}
+        type={type}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'transparent',
+            flexDirection: 'row',
+          }}>
+          <TouchableOpacity
+            style={{
+              flex: 0.1,
+              alignSelf: 'flex-end',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              setType(
+                type === Camera.Constants.Type.back
+                  ? Camera.Constants.Type.front
+                  : Camera.Constants.Type.back
+              );
+            }}
+          >
+            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flex: 0.1,
+              alignSelf: 'flex-end',
+              alignItems: 'center',
+            }}
+            onPress={async () => {
+              if (this.camera) {
+                let photo = await this.camera.takePictureAsync();
+                console.log(photo);
+                navigation.navigate("PhotoScreen", {uri: photo.uri});
+              }
+            }}
+          >
+            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Take Picture </Text>
+          </TouchableOpacity>
+
+        </View>
+      </Camera>
+    </View>
+  );
+}
 
 function HomeScreen() {
   return (
     <View style={styles.pages}>
+<<<<<<< HEAD:App.js
         <StatusBar barStyle = "dark-content"/>
         <Image source = {require('./images/menu.png')} style = {{width: 50, height: 50, marginTop: 30, marginLeft: 20, borderRadius: 10,}}/>
         <Text 
+=======
+        <StatusBar barStyle = "light-content"/>
+        <Image source = {require('./images/menu.png')} style = {{width: 50, height: 50, marginTop: 40, marginLeft: 20, borderRadius: 10,}}/>
+        <Text
+>>>>>>> 1accc9d07e9eb8e730f2565633f15c43f59403d8:react-native-maps/App.js
           style = {{
             marginVertical: 70,
             marginHorizontal: 60,
@@ -189,6 +334,7 @@ function HotSpotScreen() {
   );
 }
 
+<<<<<<< HEAD:App.js
 function CameraScreen() {
   return(
     <View style={styles.pages}>
@@ -199,6 +345,29 @@ function CameraScreen() {
             marginHorizontal: 30,
             fontSize: 50}}>CAMERA PAGE</Text>
     </View>
+=======
+function PinScreen({ route, navigation }) {
+  return (
+    <>
+      <View style={styles.ratingBar}>
+        <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', top: 50}}> {route.params.name}</Text>
+        <Text style={{fontSize: 25, textAlign: 'center', top: 55}}>Rating: {route.params.rating}</Text>
+      </View>
+
+      <View style={styles.imagesFeed}>
+        <Text style = {{fontSize: 20, textAlign: 'center', top: 100}}>Images go here!</Text>
+      </View>
+    </>
+  );
+}
+
+function MapPinContainer(){
+  return (
+    <Stack.Navigator  screenOptions={{ headerShown: false  }}>
+      <Stack.Screen name="Map" component={MapScreen} options={({ route }) => ({title: "Picture This!"})}/>
+      <Stack.Screen name="Pin" component={PinScreen} options={({ route }) => ({ title: route.params.name })}/>
+    </Stack.Navigator>
+>>>>>>> 1accc9d07e9eb8e730f2565633f15c43f59403d8:react-native-maps/App.js
   );
 }
 
@@ -215,12 +384,12 @@ function SettingsScreen() {
         <View style = {styles.rectangle}>
           <Text styles = {styles.settingsText}>HELP CENTER</Text>
         </View>
-        
+
     </View>
   );
 }
 
-function App() {
+export default function App() {
   return(
     <NavigationContainer independent = {true}>
       <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName = "Home">
@@ -232,6 +401,119 @@ function App() {
     </NavigationContainer>
   );
 }
+
+class MapScreen extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoading: true,
+      markers: [],
+      currRegion: {
+        latitude: 30.267032,
+        longitude: -97.742209,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
+      press: {
+        latitude: 0,
+        longitude: 0,
+      },
+    };
+
+  }
+  render() {
+    return (
+        <MapView
+          style={{ flex: 1 }}
+          provider="google"
+          mapType="hybrid"
+          showsMyLocationButton
+          showsUserLocation
+          initialRegion={{
+            latitude: 30.267032,
+            longitude: -97.742209,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+
+          onRegionChangeComplete = {(region) => {
+            this.setState({
+              currRegion: region,
+            })
+          }}
+
+          onPress = {e => {
+            console.log("Press logged");
+            this.setState({
+              press: {
+                latitude: e.nativeEvent.coordinate.latitude,
+                longitude: e.nativeEvent.coordinate.longitude,
+              }},
+              () => {
+                this.fetchMarkerData();
+            });
+          }}
+        >
+
+      { this.state.isLoading ? null : this.state.markers.map((marker, index) => {
+        const coords = {
+           latitude: marker.location.coordinates[1],
+           longitude: marker.location.coordinates[0],
+         };
+
+       const descrip = `User Rating: ${marker.rating}`;
+
+       return (
+           <MapView.Marker
+              onPress={() => {
+                this.props.navigation.push('Pin', {
+                  pinId: marker._id.$oid,
+                  name: marker.title,
+                  rating: marker.rating,
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                });
+              }}
+              key={index}
+              coordinate={coords}
+              title={marker.title}
+              description={descrip}
+              pinColor={'red'}
+           />
+       );
+        })}
+
+      </MapView>
+    );
+  }
+
+
+  componentDidMount() {
+    // this.fetchMarkerData();
+  }
+
+  fetchMarkerData() {
+    const degreeLatInMeters = 111120;
+    const radius = degreeLatInMeters * (this.state.currRegion.latitudeDelta + this.state.currRegion.longitudeDelta) / 2;
+    const link = 'https://peaceful-falls-21154.herokuapp.com/post/search_nearby?lon=' +
+      this.state.press.longitude.toString() + '&lat=' + this.state.press.latitude.toString() + '&dist=' + radius;
+    console.log(link);
+    fetch(link, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({
+          isLoading: false,
+          markers: json,
+        });
+      })
+      .catch(error =>{
+        console.error(error);
+      })
+    }
+};
 
 
 const styles = StyleSheet.create({
@@ -381,7 +663,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 10,
   },
-  
-});
 
-export default App;
+});

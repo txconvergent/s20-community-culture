@@ -1,0 +1,32 @@
+{"executionTime":"2020-04-01 09:51:56 PM",
+  "attractionList":[
+    {
+      "id":1,
+      "attractionName":"UT Tower",
+      "latitude":30.286421,
+      "longitude":-97.739409,
+      "timeStatus":"Permanent",
+      "userRating":4.8,
+      "stAddress":"110 Inner Campus Drive",
+      "city":"Austin",
+      "state":"TX",
+      "postalCode":"78705",
+      "topComment":"Hook 'em'",
+      "pinColor":"green",
+    },
+
+    {
+      "id":2,
+      "attractionName":"Jester West Residence Hall",
+      "latitude":30.282663,
+      "longitude":-97.736419,
+      "timeStatus":"Permanent",
+      "userRating":0.1,
+      "stAddress":"201 E 21st St",
+      "city":"Austin",
+      "state":"TX",
+      "postalCode":"78705",
+      "topComment":"I haven't had hot water in 3 weeks",
+      "pinColor":"blue",
+    }
+]}
