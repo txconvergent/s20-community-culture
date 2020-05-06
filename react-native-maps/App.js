@@ -1,10 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar, ImageBackground} from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar} from 'react-native';
 import { KeyboardAvoidingView, ScrollView } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import TabActions from '@react-navigation/native';
+import { NavigationContainer} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import CardStyleInterpolators from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MapView from 'react-native-maps';
 import { Camera } from "expo-camera";
@@ -42,6 +40,7 @@ function UserScreen({navigation}) {
           resizeMode = 'contain'
         />
       </View>
+      <Text style = {styles.userTitle}>PictureThis!</Text>
       <KeyboardAvoidingView behavior= "padding" style = {styles.container}>
         <StatusBar barStyle = "light-content"/>
         <TextInput
@@ -118,7 +117,7 @@ function SignUpScreen({navigation}) {
 function TabScreen({navigation}) {
   return (
     <NavigationContainer independent = {true}>
-      <StatusBar barStyle = "dark-content"/>
+      <StatusBar barStyle = "light-content"/>
       <Tab.Navigator
         screenOptions = {({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -257,19 +256,6 @@ function CameraScreen({ navigation }) {
   );
 }
 
-function HomeScreen() {
-  return (
-    <View style={styles.pages}>
-        <StatusBar barStyle = "light-content"/>
-        <Image source = {require('./images/menu.png')} style = {{width: 50, height: 50, marginTop: 40, marginLeft: 20, borderRadius: 10,}}/>
-        <Text
-          style = {{
-            marginVertical: 70,
-            marginHorizontal: 60,
-            fontSize: 50}}>HOME PAGE</Text>
-    </View>
-  );
-}
 
 function HotSpotScreen() {
   return (
@@ -457,7 +443,7 @@ const styles = StyleSheet.create({
   //general page style guidelines
   container: {
     flex: 1,
-    backgroundColor: '#AD1457',
+    backgroundColor: '#aa192f',
     justifyContent: "center",
     alignItems: 'center',
   },
@@ -465,7 +451,6 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize : 50,
     fontWeight : '500',
-    fontFamily: "Times New Roman",
     paddingLeft: 25,
     color: "#ffffff",
     paddingBottom: 250,
@@ -485,6 +470,17 @@ const styles = StyleSheet.create({
   loginLogo: {
     flexGrow: 1,
     width: 300,
+  },
+
+  userTitle: {
+    fontSize: 50,
+    fontWeight: '500',
+    paddingBottom: 70,
+    paddingLeft: 90,
+    backgroundColor: '#aa192f',
+    alignItems: 'center',
+    color: 'white',
+
   },
 
   input: {
@@ -509,7 +505,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     textAlign: 'center',
-    fontFamily: 'Times New Roman',
     textShadowColor: '#000',
     textShadowOffset: {width: 0.5, height: 0.5},
     textShadowRadius: 1,
@@ -547,7 +542,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#AD1457',
+    backgroundColor: '#aa192f',
     height: 65,
   },
 
@@ -560,13 +555,6 @@ const styles = StyleSheet.create({
   pages: {
     flex: 1,
     backgroundColor: '#EF9A9A',
-  },
-
-  menuIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-    margin: 20,
   },
 
   titleLogo: {
