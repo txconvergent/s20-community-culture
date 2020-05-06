@@ -381,14 +381,13 @@ class MapScreen extends React.Component {
           }}
 
           onPress = {e => {
-            console.log(e.nativeEvent);
+            console.log("Press logged");
             this.setState({
               press: {
                 latitude: e.nativeEvent.coordinate.latitude,
                 longitude: e.nativeEvent.coordinate.longitude,
               }},
               () => {
-                console.log(this.state);
                 this.fetchMarkerData();
             });
           }}
@@ -433,15 +432,15 @@ class MapScreen extends React.Component {
 
   fetchMarkerData() {
     const degreeLatInMeters = 111120;
+    const radius = degreeLatInMeters * (this.state.currRegion.latitudeDelta + this.state.currRegion.longitudeDelta) / 2;
     const link = 'https://peaceful-falls-21154.herokuapp.com/post/search_nearby?lon=' +
-      this.state.press.longitude.toString() + '&lat=' + this.state.press.latitude.toString() + '&dist=' + this.state.currRegion.latitudeDelta * degreeLatInMeters;
+      this.state.press.longitude.toString() + '&lat=' + this.state.press.latitude.toString() + '&dist=' + radius;
     console.log(link);
     fetch(link, {
       method: 'GET',
     })
       .then(response => response.json())
       .then(json => {
-        console.log(json);
         this.setState({
           isLoading: false,
           markers: json,
@@ -591,12 +590,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 10,
   },
-
-  imagesFeed: {
-    width: 500,
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  }
 
 });
