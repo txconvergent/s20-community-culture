@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar} from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar, ImageBackground} from 'react-native';
 import { KeyboardAvoidingView, ScrollView } from 'react-native';
-import { NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer, useNavigation} from '@react-navigation/native';
+import TabActions from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import CardStyleInterpolators from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MapView from 'react-native-maps';
 import { Camera } from "expo-camera";
@@ -299,15 +301,44 @@ function SettingsScreen() {
     <View style={styles.pages}>
         <StatusBar barStyle = "light-content"/>
         <View style = {styles.rectangle}>
-          <Text styles = {styles.settingsText}>PROFILE</Text>
+        <Image
+          style = {styles.icon}
+          source = {require('./images/PictureThisLogo.png')}
+          resizeMode = 'contain'
+        />
+          <Text style = {styles.label}>Account Settings</Text>
         </View>
-        <View style = {styles.rectangle}>
-          <Text styles = {styles.settingsText}>NOTIFICATIONS</Text>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/user.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>User Profile</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
         </View>
-        <View style = {styles.rectangle}>
-          <Text styles = {styles.settingsText}>HELP CENTER</Text>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/notifications.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Notifications</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
         </View>
-
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/star-512.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Rate our App</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/chat.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Send us Feedback</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/security.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Privacy and Security</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/help.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Help Center</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        
     </View>
   );
 }
@@ -443,7 +474,7 @@ const styles = StyleSheet.create({
   //general page style guidelines
   container: {
     flex: 1,
-    backgroundColor: '#aa192f',
+    backgroundColor: '#b00020',
     justifyContent: "center",
     alignItems: 'center',
   },
@@ -542,7 +573,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#aa192f',
+    backgroundColor: '#b00020',
     height: 65,
   },
 
@@ -551,10 +582,11 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 10,
   },
-
+  
+  //individual pages
   pages: {
     flex: 1,
-    backgroundColor: '#EF9A9A',
+    backgroundColor: '#ffffff',
   },
 
   titleLogo: {
@@ -570,13 +602,45 @@ const styles = StyleSheet.create({
   },
 
   rectangle: {
+    backgroundColor: '#b00020',
+    height: 90,
     flexDirection: 'row',
-    width: 380,
-    height: 150,
-    backgroundColor: '#E57373',
-    marginVertical: 25,
-    marginHorizontal: 15,
-    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+
+  label: {
+    color: '#ffffff',
+    fontSize: 32,
+    fontWeight: '500',
+    textShadowColor: '#000',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: 2,
+  },
+
+  boxes: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    height: 80,
+    backgroundColor: '#FFEBEE',
+    marginVertical: 5,
+
+  },
+
+  settingsText: {
+    fontSize: 32,
+    paddingLeft: 15,
+    fontWeight: '400',
+    textShadowColor: '#fff',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: 1,
+  },
+
+  arrow: {
+    justifyContent: 'space-evenly',
+    height: 50,
+    width: 50,
+  }
 
 });
