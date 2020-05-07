@@ -328,7 +328,7 @@ function SettingsScreen() {
 
 export default function App() {
   return(
-    <NavigationContainer independent = {true}>
+    <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName = "Home">
         <Stack.Screen name = "TitleScreen" component = {TitleScreen} />
         <Stack.Screen name = "UserScreen" component = {UserScreen} />
