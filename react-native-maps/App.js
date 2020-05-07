@@ -273,14 +273,45 @@ function HotSpotScreen() {
 function PinScreen({ route, navigation }) {
   return (
     <>
+
       <View style={styles.ratingBar}>
-        <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', top: 50}}> {route.params.name}</Text>
-        <Text style={{fontSize: 25, textAlign: 'center', top: 55}}>Rating: {route.params.rating}</Text>
+        <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}> {route.params.name}</Text>
+        <Text style={{fontSize: 25, textAlign: 'center'}}>Rating: {route.params.rating}</Text>
       </View>
 
-      <View style={styles.imagesFeed}>
-        <Text style = {{fontSize: 20, textAlign: 'center', top: 100}}>Images go here!</Text>
+      <View style={{height:175}}>
+        <ScrollView style={styles.pinImageGallery} horizontal={true} showsHorizontalScrollIndicator={false}>
+          <Image source={require('./images/nightTower.jpg')} style={styles.pinImage}/>
+          <Image source={require('./images/tower.jpg')} style={styles.pinImage}/>
+        </ScrollView>
       </View>
+
+      <ScrollView style={styles.commentFeed}>
+        <View style={styles.comment}>
+          <Text style={styles.pinCommentUsername}>@dannyp24 rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>Man, I love a good Tower pic</Text>
+        </View>
+
+        <View style={styles.comment}>
+          <Text style={styles.pinCommentUsername}>@NotJimmyFallon rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>Couldn't care less about the tower. Sick fountain in front</Text>
+        </View>
+
+        <View style={styles.comment}>
+          <Text style={styles.pinCommentUsername}>@GregFenves rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>I'm gonna work here forever!</Text>
+        </View>
+
+        <View style={styles.comment}>
+          <Text style={styles.pinCommentUsername}>@BevoXV rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>It's so hard to type without opposable thumbs</Text>
+        </View>
+
+        <View style={styles.comment}>
+          <Text style={styles.pinCommentUsername}>@GrandpaJoeTruther rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>Cool tower. But don't let it distract you from the fact that Grandpa Joe in Charlie and the Chocolate Factory pretended to be bedridden until Charlie found the golden ticket</Text>
+        </View>
+      </ScrollView>
     </>
   );
 }
@@ -578,5 +609,46 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 10,
   },
+
+  ratingBar: {
+    paddingBottom: 10,
+    paddingTop: 20,
+  },
+
+  pinImageGallery: {
+    flex: 1,
+    paddingBottom: 10,
+  },
+
+  pinImage: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    width: 300,
+    height: 175,
+  },
+
+  commentFeed: {
+    paddingTop: 0,
+    backgroundColor: 'white',
+  },
+
+  comment: {
+    paddingTop: 0,
+    paddingBottom: 5,
+    paddingLeft: 10,
+    marginBottom: 2,
+    backgroundColor: '#faeded',
+  },
+
+  pinCommentUsername: {
+    fontSize: 15,
+    paddingTop: 10,
+    fontWeight: 'bold',
+  },
+
+  pinCommentText: {
+    fontSize: 15,
+    paddingBottom: 10,
+  }
 
 });
