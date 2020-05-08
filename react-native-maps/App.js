@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar} from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar, ImageBackground} from 'react-native';
 import { KeyboardAvoidingView, ScrollView } from 'react-native';
-import { NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer, useNavigation} from '@react-navigation/native';
+import TabActions from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import CardStyleInterpolators from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MapView from 'react-native-maps';
 import { Camera } from "expo-camera";
@@ -238,6 +240,8 @@ function CameraScreen({ navigation }) {
               flex: 0.1,
               alignSelf: 'flex-end',
               alignItems: 'center',
+              width: 200,
+              marginLeft: 40,
             }}
             onPress={async () => {
               if (this.camera) {
@@ -247,7 +251,7 @@ function CameraScreen({ navigation }) {
               }
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Take Picture </Text>
+            <Text style={{ fontSize: 18, marginBottom: 0, color: 'white', textAlign: 'right', width: 100, marginLeft: 450 }}> Take Picture </Text>
           </TouchableOpacity>
 
         </View>
@@ -271,24 +275,29 @@ function HotSpotScreen() {
 }
 
 function PinScreen({ route, navigation }) {
+  if(route.params.name == "UT Tower"){
+
   return (
     <>
 
       <View style={styles.ratingBar}>
         <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}> {route.params.name}</Text>
-        <Text style={{fontSize: 25, textAlign: 'center'}}>Rating: {route.params.rating}</Text>
+        <Text style={{fontSize: 25, textAlign: 'center'}}>Rating: {route.params.rating}.0</Text>
       </View>
 
       <View style={{height:175}}>
         <ScrollView style={styles.pinImageGallery} horizontal={true} showsHorizontalScrollIndicator={false}>
-          <Image source={require('./images/nightTower.jpg')} style={styles.pinImage}/>
-          <Image source={require('./images/tower.jpg')} style={styles.pinImage}/>
+          <Image source={require('./images/tower6.jpg')} style={styles.pinImage}/>
+          <Image source={require('./images/tower3.jpg')} style={styles.pinImage}/>
+          <Image source={require('./images/tower5.jpg')} style={styles.pinImage}/>
+          <Image source={require('./images/tower7.jpg')} style={styles.pinImage}/>
         </ScrollView>
       </View>
 
       <ScrollView style={styles.commentFeed}>
+
         <View style={styles.comment}>
-          <Text style={styles.pinCommentUsername}>@dannyp24 rates this 5.0</Text>
+          <Text style={styles.pinCommentUsername}>@DannyPerille rates this 5.0</Text>
           <Text style={styles.pinCommentText}>Man, I love a good Tower pic</Text>
         </View>
 
@@ -299,7 +308,7 @@ function PinScreen({ route, navigation }) {
 
         <View style={styles.comment}>
           <Text style={styles.pinCommentUsername}>@GregFenves rates this 5.0</Text>
-          <Text style={styles.pinCommentText}>I'm gonna work here forever!</Text>
+          <Text style={styles.pinCommentText}>This tower is beautiful. I'm gonna work here forever!</Text>
         </View>
 
         <View style={styles.comment}>
@@ -308,12 +317,71 @@ function PinScreen({ route, navigation }) {
         </View>
 
         <View style={styles.comment}>
-          <Text style={styles.pinCommentUsername}>@GrandpaJoeTruther rates this 5.0</Text>
-          <Text style={styles.pinCommentText}>Cool tower. But don't let it distract you from the fact that Grandpa Joe in Charlie and the Chocolate Factory pretended to be bedridden until Charlie found the golden ticket</Text>
+          <Text style={styles.pinCommentUsername}>@TexasFan11 rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>I won't lie, I have no idea what they do inside of there. But it looks sick from the outside</Text>
+        </View>
+
+        <View style={styles.comment}>
+          <Text style={styles.pinCommentUsername}>@boomersooner rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>I may hate this school, but I must admit that that is a fine piece of architecture</Text>
         </View>
       </ScrollView>
     </>
   );
+}
+
+  else {
+    return(
+      <>
+
+        <View style={styles.ratingBar}>
+          <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}> {route.params.name}</Text>
+          <Text style={{fontSize: 25, textAlign: 'center'}}>Rating: {route.params.rating}.0</Text>
+        </View>
+
+        <View style={{height:175}}>
+          <ScrollView style={styles.pinImageGallery} horizontal={true} showsHorizontalScrollIndicator={false}>
+            <Image source={require('./images/cindis.jpg')} style={styles.pinImage}/>
+            <Image source={require('./images/cindis2.jpg')} style={styles.pinImage}/>
+            <Image source={require('./images/cindis3.jpg')} style={styles.pinImage}/>
+            <Image source={require('./images/cindis4.jpg')} style={styles.pinImage}/>
+          </ScrollView>
+        </View>
+
+        <ScrollView style={styles.commentFeed}>
+        <View style={styles.comment}>
+          <Text style={styles.pinCommentUsername}>@KevinJacob rates this 5.0</Text>
+          <Text style={styles.pinCommentText}>Food was incredible. I wish I knew how to pronounce "delicatessen" though...</Text>
+        </View>
+
+          <View style={styles.comment}>
+            <Text style={styles.pinCommentUsername}>@ShristiChitlangia rates this 3.0</Text>
+            <Text style={styles.pinCommentText}>It's fine, not incredible</Text>
+          </View>
+
+          <View style={styles.comment}>
+            <Text style={styles.pinCommentUsername}>@AlexDeJong rates this 5.0</Text>
+            <Text style={styles.pinCommentText}>I plan to eat this for every meal for the rest of my life</Text>
+          </View>
+
+          <View style={styles.comment}>
+            <Text style={styles.pinCommentUsername}>@PranavRayudu rates this 4.0</Text>
+            <Text style={styles.pinCommentText}>Decent... stay away from the salami though</Text>
+          </View>
+
+          <View style={styles.comment}>
+            <Text style={styles.pinCommentUsername}>@mcconaughey rates this 3.0</Text>
+            <Text style={styles.pinCommentText}>This food was just alright... alright alright.</Text>
+          </View>
+
+          <View style={styles.comment}>
+            <Text style={styles.pinCommentUsername}>@BettyWhite rates this 4.0</Text>
+            <Text style={styles.pinCommentText}>Decent, but if you want real New York food, you're not gonna find it in Dallas.</Text>
+          </View>
+        </ScrollView>
+      </>
+    )
+  }
 }
 
 function MapPinContainer(){
@@ -330,13 +398,42 @@ function SettingsScreen() {
     <View style={styles.pages}>
         <StatusBar barStyle = "light-content"/>
         <View style = {styles.rectangle}>
-          <Text styles = {styles.settingsText}>PROFILE</Text>
+        <Image
+          style = {styles.icon}
+          source = {require('./images/PictureThisLogo.png')}
+          resizeMode = 'contain'
+        />
+          <Text style = {styles.label}>Account Settings</Text>
         </View>
-        <View style = {styles.rectangle}>
-          <Text styles = {styles.settingsText}>NOTIFICATIONS</Text>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/user.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>User Profile</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
         </View>
-        <View style = {styles.rectangle}>
-          <Text styles = {styles.settingsText}>HELP CENTER</Text>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/notifications.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Notifications</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/star-512.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Rate our App</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/chat.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Send us Feedback</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/security.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Privacy and Security</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
+        </View>
+        <View style = {styles.boxes}>
+          <Image source = {require('./images/help.png')} style = {styles.icon}></Image>
+          <Text style = {styles.settingsText}>Help Center</Text>
+          <Image source = {require('./images/arrow.png')} style = {styles.arrow}></Image>
         </View>
 
     </View>
@@ -474,7 +571,7 @@ const styles = StyleSheet.create({
   //general page style guidelines
   container: {
     flex: 1,
-    backgroundColor: '#aa192f',
+    backgroundColor: '#b00020',
     justifyContent: "center",
     alignItems: 'center',
   },
@@ -507,7 +604,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: '500',
     paddingBottom: 70,
-    paddingLeft: 90,
+    textAlign: 'center',
     backgroundColor: '#aa192f',
     alignItems: 'center',
     color: 'white',
@@ -573,7 +670,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#aa192f',
+    backgroundColor: '#b00020',
     height: 65,
   },
 
@@ -583,9 +680,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
+  //individual pages
   pages: {
     flex: 1,
-    backgroundColor: '#EF9A9A',
+    backgroundColor: '#ffffff',
   },
 
   titleLogo: {
@@ -601,13 +699,11 @@ const styles = StyleSheet.create({
   },
 
   rectangle: {
+    backgroundColor: '#b00020',
+    height: 90,
     flexDirection: 'row',
-    width: 380,
-    height: 150,
-    backgroundColor: '#E57373',
-    marginVertical: 25,
-    marginHorizontal: 15,
-    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   ratingBar: {
@@ -649,6 +745,40 @@ const styles = StyleSheet.create({
   pinCommentText: {
     fontSize: 15,
     paddingBottom: 10,
+  },
+
+  label: {
+    color: '#ffffff',
+    fontSize: 32,
+    fontWeight: '500',
+    textShadowColor: '#000',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: 2,
+  },
+
+  boxes: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    height: 80,
+    backgroundColor: '#FFEBEE',
+    marginVertical: 5,
+
+  },
+
+  settingsText: {
+    fontSize: 32,
+    paddingLeft: 15,
+    fontWeight: '400',
+    textShadowColor: '#fff',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: 1,
+  },
+
+  arrow: {
+    justifyContent: 'space-evenly',
+    height: 50,
+    width: 50,
   }
 
 });
