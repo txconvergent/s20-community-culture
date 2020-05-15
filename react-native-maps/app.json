@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "First App Attempt",
-    "slug": "newapp",
+    "name": "PictureThis",
+    "slug": "PictureThis",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
