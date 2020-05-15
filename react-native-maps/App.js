@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, {useState, useEffect} from 'react';
+=======
+import React, { useState, useEffect } from "react";
+>>>>>>> 4fd81edd0b1564a8360af66126387cdd672ae58c
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, StatusBar, ImageBackground} from 'react-native';
 import { KeyboardAvoidingView, ScrollView } from 'react-native';
 import { NavigationContainer, useNavigation} from '@react-navigation/native';
@@ -174,17 +178,58 @@ function CameraNav() {
   );
 }
 
-function PhotoScreen({route}){
-  console.log(route.params.uri);
+function PhotoScreen({route, navigation}){
+  var formData = new FormData();
+  formData.append("title", "0");
+  formData.append("lat", "1");
+  formData.append("lon", "2");
+  formData.append('attraction_img', {
+    uri: route.params.uri,
+    name: 'file.jpg'
+  });
 
   return (
-    <Image
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+    <ImageBackground
+      style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', flexDirection: "column" }}
       source={{
         isStatic: true,
         uri: route.params.uri
-      }}
-    />
+      }}>
+      <TouchableOpacity
+            style={{
+              flex: 0.2,
+              alignSelf: 'flex-end',
+              alignItems: 'center',
+              backgroundColor: 'blue',
+              justifyContent:'center',
+              backgroundColor:'blue',
+              borderRadius:20,
+              margin: 10,
+            }}
+            onPress={() => {
+              console.log("Submit Photo");
+              console.log(formData);
+              fetch('https://peaceful-falls-21154.herokuapp.com/post/create/', {
+                method: 'POST',
+                body: formData
+              })
+              .then(response => {
+                return JSON.stringify(response);
+              })
+              .then(result => {
+                console.log('Success:', result);
+              })
+              .catch(error => {
+                console.error(error);
+              })
+              navigation.pop();
+            }
+          }
+        >
+        <Image source={require('./icons/send.png')} style={styles.icon}/>
+      </TouchableOpacity>
+    </ImageBackground>
+    
   );
 }
 
@@ -218,12 +263,18 @@ function CameraScreen({ navigation }) {
             flex: 1,
             backgroundColor: 'transparent',
             flexDirection: 'row',
+            justifyContent: 'flex-end'
           }}>
           <TouchableOpacity
             style={{
-              flex: 0.1,
+              flex: 0.2,
               alignSelf: 'flex-end',
               alignItems: 'center',
+              backgroundColor: 'blue',
+              justifyContent:'center',
+              backgroundColor:'blue',
+              borderRadius:20,
+              margin: 10,
             }}
             onPress={() => {
               setType(
@@ -233,13 +284,17 @@ function CameraScreen({ navigation }) {
               );
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+            <Image source={require('./icons/flip.png')} style={styles.icon}/>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
-              flex: 0.1,
+              flex: 0.2,
               alignSelf: 'flex-end',
               alignItems: 'center',
+              justifyContent:'center',
+              backgroundColor:'blue',
+              borderRadius:20,
+              margin: 10,
             }}
             onPress={async () => {
               if (this.camera) {
@@ -249,7 +304,7 @@ function CameraScreen({ navigation }) {
               }
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Take Picture </Text>
+            <Image source={require('./icons/camera.png')} style={styles.icon}/>
           </TouchableOpacity>
 
         </View>
@@ -345,7 +400,7 @@ function SettingsScreen() {
 
 export default function App() {
   return(
-    <NavigationContainer independent = {true}>
+    <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName = "Home">
         <Stack.Screen name = "TitleScreen" component = {TitleScreen} />
         <Stack.Screen name = "UserScreen" component = {UserScreen} />
